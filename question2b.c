@@ -21,10 +21,8 @@ int main (){
 		char no_argument_message[21] = "No arguments given!\n";
 		write(STDOUT_FILENO,no_argument_message,strlen(no_argument_message));
 	}
-		// If buffer contains 'fortune'
-	if (strcmp(read_buffer,"fortune") != 0){
-		write(STDOUT_FILENO,"Today is what happened to yesterday.\n",40);
+	else {
+		execlp(read_buffer,read_buffer,(char *)NULL);
 	}
-	
 	return 0;
 } 	
