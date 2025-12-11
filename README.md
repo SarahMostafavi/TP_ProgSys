@@ -8,11 +8,11 @@ L'objectif du TP est de réaliser un terminal fonctionnel qui doit afficher les 
 
 ## II. Projet
 
-### 1) Création du microshell
+On commence par créer le microshell enseash.c qui va permettre de lancer les commandes. 
+On va y ajouter les fonctionalités suivantes : 
 
-On commence par créer le microshell enseash qui doit permettre de lancer les commandes. 
-Pour cela, on :
+### 1) Affichage du message d'accueil
+L'objectif de cette fonctionalité est de faire apparaître un message d'acueil indiquant qu'on a ouvert le microshell.
 
-### 2) 
 
 ## III. Conclusion
