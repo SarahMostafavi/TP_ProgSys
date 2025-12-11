@@ -44,6 +44,7 @@ int main (){
 			if (n == 1){	// Gestion du cas où on fait entrée snas commande								
 				char no_argument_message[21] = "No arguments given!\n";
 				write(STDOUT_FILENO,no_argument_message,strlen(no_argument_message));
+				exit(EXIT_SUCCESS);
 			}
 			
 			else{
