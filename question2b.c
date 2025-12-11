@@ -1,6 +1,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <string.h>
+
 #define WELCOME_MESSAGE_SIZE_MAX 80
 #define READ_BUFFER_MAX_SIZE 200
 
@@ -12,5 +14,17 @@ int main (){
 		// 2.a
 	char read_buffer[READ_BUFFER_MAX_SIZE];
 	int n = read(STDIN_FILENO, read_buffer,READ_BUFFER_MAX_SIZE);	
+	// 2.b
+	read_buffer[n] = '\0';
+		// If read_buffer has no argument
+	if (n == 1){
+		char no_argument_message[21] = "No arguments given!\n";
+		write(STDOUT_FILENO,no_argument_message,strlen(no_argument_message));
+	}
+		// If buffer contains 'fortune'
+	if (strcmp(read_buffer,"fortune") != 0){
+		write(STDOUT_FILENO,"Today is what happened to yesterday.\n",40);
+	}
+	
 	return 0;
-} 
+} 	
