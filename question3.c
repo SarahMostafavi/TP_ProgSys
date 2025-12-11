@@ -1,19 +1,14 @@
-#include <sys/types.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <string.h>
 #include <sys/wait.h>
 #include <stdlib.h>
 
 #define WELCOME_MESSAGE_SIZE_MAX 80
 #define READ_BUFFER_MAX_SIZE 200
-
 #define PROMPT "enseah % "
 #define PROMPT_SIZE 8
 
 int main (){
 	// question 1
-	char welcome_message[WELCOME_MESSAGE_SIZE_MAX] = "Bienvenue dans le Shell ENSEA.\nPour quitter, tapez 'exit'.\nenseah %";
+	char welcome_message[WELCOME_MESSAGE_SIZE_MAX] = "Bienvenue dans le Shell ENSEA.\nPour quitter, tapez 'exit'.\nenseah % ";
 	write(STDOUT_FILENO,welcome_message,WELCOME_MESSAGE_SIZE_MAX);
 	// question 2
 		// 2.c
@@ -23,10 +18,7 @@ int main (){
 		int n = read(STDIN_FILENO, read_buffer,READ_BUFFER_MAX_SIZE);	
 		
 		read_buffer[n] = '\0';
-		char *n1 = strchr(read_buffer, '\n');
-		if (n1){
-			*n1 = '\0';
-		}
+
 			// Création du nouveau processus
 		int pid = fork();
 		int status;
@@ -45,11 +37,16 @@ int main (){
 				write(STDOUT_FILENO,no_argument_message,strlen(no_argument_message));
 			}
 			
-			if (strcmp(read_buffer,"fortune") == 0){		// If buffer contains 'fortune'
+			else if (strcmp(read_buffer,"fortune") == 0){		// If buffer contains 'fortune'
 				write(STDOUT_FILENO,"Today is what happened to yesterday.\n",40);
 			}
-			else{
+			// question 3
+			else if((n == 0)||(strcmp(read_buffer,"exit") == 0)){	// CTRL+D -> n==0 and exit
 				execlp(read_buffer,read_buffer,(char *)NULL);
+			}
+			
+			else{
+				exit (EXIT_SUCCESS) ;
 			}
 		}
 		write(STDOUT_FILENO,PROMPT,PROMPT_SIZE);
@@ -57,4 +54,3 @@ int main (){
 	
 	
 	return 0;
-} 	
