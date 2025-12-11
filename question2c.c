@@ -27,6 +27,7 @@ int main (){
 		if (n1){
 			*n1 = '\0';
 		}
+		
 			// Création du nouveau processus
 		int pid = fork();
 		int status;
@@ -40,21 +41,17 @@ int main (){
 		}
 		else{					//child code
 			
-			if (n == 1){									// If read_buffer has no argument
+			if (n == 1){	// Gestion du cas où on fait entrée snas commande								
 				char no_argument_message[21] = "No arguments given!\n";
 				write(STDOUT_FILENO,no_argument_message,strlen(no_argument_message));
 			}
 			
-			if (strcmp(read_buffer,"fortune") == 0){		// If buffer contains 'fortune'
-				write(STDOUT_FILENO,"Today is what happened to yesterday.\n",40);
-			}
 			else{
 				execlp(read_buffer,read_buffer,(char *)NULL);
 			}
 		}
 		write(STDOUT_FILENO,PROMPT,PROMPT_SIZE);
 	}
-	
 	
 	return 0;
 } 	
