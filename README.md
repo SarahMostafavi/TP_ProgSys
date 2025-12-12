@@ -88,4 +88,6 @@ Dans les deux cas, on appelle la fonction exit. On veut que l'exit soit un succ√
 
 On obtient le r√©sultat attendu :
 
+![Capture Question 3](capture_q3.png)
+
 ## III. Conclusion
