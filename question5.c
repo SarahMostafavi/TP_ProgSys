@@ -1,3 +1,4 @@
+#define _POSIX_C_SOURCE 199309L
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -18,7 +19,7 @@
 
 
 
-int main (){
+int main (int argc, char *argv[]){
 	// question 1
 	char welcome_message[WELCOME_MESSAGE_SIZE] = "Bienvenue dans le Shell ENSEA.\nPour quitter, tapez 'exit'.\nenseah % ";
 	write(STDOUT_FILENO,welcome_message,strlen(welcome_message));
@@ -51,8 +52,12 @@ int main (){
 			exit(EXIT_SUCCESS);
 		}
 		
-			// Création du nouveau processus
+			
 		else{
+			// question 5
+			struct timespec start_time, end_time;
+			clock_gettime(CLOCK_MONOTONIC, &start_time);
+			// Création du nouveau processus
 			int pid = fork();
 			int status;
 
@@ -62,45 +67,33 @@ int main (){
 			}
 			else if (pid > 0){		//father code
 				wait(&status);
-				//question 4
+	            // question 5 : end of the execution 
+				clock_gettime(CLOCK_MONOTONIC, &end_time);
+				long execution_time_ms;
+				// calcul du temps d'execution en ms
+				execution_time_ms =(end_time.tv_sec-start_time.tv_sec)*1000 +(end_time.tv_nsec-start_time.tv_nsec)/1000000;
+				
+				//question 4 et 5
 	            char prompt[PROMPT_SIZE];
 	            strncpy(prompt, "enseash ", sizeof(prompt) - 1);
 	            prompt[sizeof(prompt) - 1] = '\0';
-	            
-	            // question 5 : begining of the execution
-	            struct timespec start, stop;
-	            int start_of_execution_time = clock_gettime(CLOCK_REALTIME, &start);
-	            if( start_of_execution_time == -1 ) {
-	            	perror( "clock gettime" );
-	            	exit( EXIT_FAILURE );
-	            }
+	           
 	            
 	            if (WIFEXITED(status)){
 	                int exit_code = WEXITSTATUS(status);
 	                last_exit_code = exit_code;
 	                last_signal = -1;
-	                char exit_part[20];
-	                sprintf(exit_part, "[exit:%d| ", exit_code);
+	                char exit_part[30];
+	                sprintf(exit_part, "[exit:%d|%ldms]", exit_code,execution_time_ms);
 	                strncat(prompt, exit_part, sizeof(prompt) - strlen(prompt) - 1);
 	            }else if (WIFSIGNALED(status)){
 	                int signal = WTERMSIG(status);
 	                last_exit_code = -1;
 	                last_signal = signal;
-	                char sign_part[20];
-	                sprintf(sign_part, "[sign:%d | ", signal);
+	                char sign_part[30];
+	                sprintf(sign_part, "[sign:%d|%ldms]", signal,execution_time_ms);
 	                strncat(prompt, sign_part, sizeof(prompt) - strlen(prompt) - 1);
 	            }
-	            
-	            // question 5 : end of the execution 
-	            int end_of_execution_time = clock_gettime(CLOCK_REALTIME, &stop); 
-				if(end_of_execution_time == -1){
-					perror("clock gettime");
-					exit( EXIT_FAILURE );
-				}
-				int execution_time = end_of_execution_time-start_of_execution_time;
-				char execution_time_part[20];
-				sprintf(execution_time_part,"%d]", execution_time);
-				strncat(prompt, execution_time_part, sizeof(prompt)-strlen(prompt)-1);	            
 	            
 				strncat(prompt, "% ", sizeof(prompt) - strlen(prompt) - 1);
 				write(STDOUT_FILENO,prompt,strlen(prompt));
