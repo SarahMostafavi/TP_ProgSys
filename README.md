@@ -90,4 +90,37 @@ On obtient le résultat attendu :
 
 ![Capture Question 3](capture_q3.png)
 
+### 4. Affichage du code retour ou de signal
+Il existe deux manières pour un programme de se terminer. Il peut soit se terminer par : 
+* un **EXIT** : le programme renvoie alors un code de valeur 0 ou 1 par un return ou un exit. On repère un exit grâce à la fonction WIFEXITED et on peut récupérer le code de retour associé en utilisant la fonction WEXITSTATUS.
+* un **signal** dans le cas d'un blocage système. On repère une fin par signal grâce à la fonction WIFSIGNALED et on peut récupérer le code signal associé en utilisant la fonction WTERMSIG.
+
+On souhaite donc maintenant faire en sorte d'afficher le code retour ou de signal du dernier programme exécuter dans le prompt.
+Pour cela, on ajoute du code dans la partie du code du père qui regarde comment s'est terminé le dernier programme exécuté et modifie le prompt pour afficher le code correspondant.
+
+Pour modifier le prompt, on utilise notamment les fonctions :
+* **sprintf** pour ajouter les valeurs des codes, qui sont des entiers, dans une chaine de caractère.
+* **strncat** pour concatener la chaine de caractère du prompt enseash avec celle avec les codes de retour ou signal.
+
+On teste le bon fonctionnement de cette fonctionnalité en faisant : 
+* Pour les tests de retour : 
+    - ls qui doit renvoyer un code 0 car le programme doit fonctionner correctement.
+    - false qui est une fonction qui renvoie 1.
+    - true qui renvoie 0.
+* Pour les tests de signal, on crée un fichier [dossier Gerbers](https://github.com/SarahMostafavi/TP_ProgSys/blob/main/test_for_q4.c) qui affiche dans le terminal la valeur du PID qui lui est associé et ensuite entre dans une boucle infinie. 
+Pour observer un signal de sortie, on tue le processus grâce à la commande kill -9 qui termine immédiatement le processus associé au PID qu'on indique en paramètre.
+
+On peut voir qu'on observe bien le comportement souhaité :
+![Capture Question 4](capture_q4.png)
+Capture du terminal dans lequel on a fait les kill : 
+![Capture Question 4 deuxième terminal](capture_q3.png)
+
+### 5. Mesure du temps d'exécution
+On souhaite maintenant afficher dans le prompt le temps d'exécution du programme précédent en milliseconde. Pour cela, on utilise la fonction **clock_gettime** :
+* avant le début du de la création du processus fils avec le fork pour pouvoir récupérer par la suite l'instant de début d'exécution.
+* après le que l'on détecte la fin du proccesus fils dans le code du père (soit après le wait(&status)) pour pouvoir récupérer l'instant de fin d'éxécution.
+Pour convertir la durée d'éxécution en milliseconde, nous avons utilisé la ligne de code fournit dans la documentation de la fonction clock_gettime.
+
+On modifie ensuite ce qui a été à la question précédente pour afficher la durée d'éxécution dans le prompt.
+
 ## III. Conclusion
