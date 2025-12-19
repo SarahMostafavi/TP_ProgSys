@@ -112,15 +112,32 @@ Pour observer un signal de sortie, on tue le processus grâce à la commande kil
 
 On peut voir qu'on observe bien le comportement souhaité :
 ![Capture Question 4](capture_q4.png)
+
 Capture du terminal dans lequel on a fait les kill : 
-![Capture Question 4 deuxième terminal](capture_q3.png)
+
+![Capture Question 4 deuxième terminal](capture_q4_2eme_terminal.png)
 
 ### 5. Mesure du temps d'exécution
 On souhaite maintenant afficher dans le prompt le temps d'exécution du programme précédent en milliseconde. Pour cela, on utilise la fonction **clock_gettime** :
-* avant le début du de la création du processus fils avec le fork pour pouvoir récupérer par la suite l'instant de début d'exécution.
-* après le que l'on détecte la fin du proccesus fils dans le code du père (soit après le wait(&status)) pour pouvoir récupérer l'instant de fin d'éxécution.
-Pour convertir la durée d'éxécution en milliseconde, nous avons utilisé la ligne de code fournit dans la documentation de la fonction clock_gettime.
+* juste avant l’appel à fork() pour enregistrer l’instant de début d’exécution.
+* après avoir détecté la fin du processus fils dans le code du père, c’est-à-dire après l’appel à wait(&status) pour enregistrer l'instant de fin d'éxécution.
+La durée d’exécution est calculée à partir de la différence entre les deux timestamps qui sont exprimés sous la forme de couples (secondes, nanosecondes). On la convertie ensuite en millisecondes.
 
-On modifie ensuite ce qui a été à la question précédente pour afficher la durée d'éxécution dans le prompt.
+On modifie ensuite le prompt construit à la question précédente afin d’y ajouter la durée d’exécution du programme.
+Cette fonctionnalité a le comportement attendu : 
+![Capture Question 5](capture_q5.png)
 
-## III. Conclusion
+### 6. Exécution d'une commande avec argument
+On souhaite maintenant exécuter des commander avec des arguments. 
+
+Pour cela, on commence par découper la commande saisie par l’utilisateur, stockée dans read_buffer, en plusieurs chaînes de caractères correspondant au nom du programme et à ses arguments. Pour cela, on utilise la fonction strtok qui permet de séparer une chaîne de caractères en utilisant " " comme délimiteur.
+
+Chaque argument récupéré est stocké dans un tableau argv, qui correspond au format attendu par la fonction execvp. Le premier élément du tableau (argv[0]) contient le nom de la commande, les suivants contiennent les arguments, et le tableau est terminé par un pointeur NULL afin de respecter la convention des fonctions de la famille exec.
+
+On appelle ensuite la fonction execvp epour remplacer le processus fils par le programme demandé avec ses arguments. 
+
+On peut alors bien exécuter des programme avec des arguments comme ls - a et ls - l qui permettent d'afficher plus d’informations sur les fichiers : 
+
+![Capture Question 6](capture_q6.png)
+
+
